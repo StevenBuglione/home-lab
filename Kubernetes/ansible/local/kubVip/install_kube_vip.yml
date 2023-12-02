@@ -19,7 +19,7 @@
     - name: Generate Kube-VIP Daemonset Configuration
       ansible.builtin.shell:
         cmd: >
-          docker run --network host --rm ghcr.io/kube-vip/kube-vip:{{ kv_version }} manifest daemonset
+          sudo docker run --network host --rm ghcr.io/kube-vip/kube-vip:{{ kv_version }} manifest daemonset
           --interface {{ interface }}
           --address {{ vip }}
           --inCluster
