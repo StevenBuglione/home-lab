@@ -8,7 +8,7 @@
   tasks:
     - name: Set Kubectl Context to k3s-ha
       ansible.builtin.command:
-        cmd: kubectl config use-context k3s-ha
+        cmd: kubectl k3s-ha
       delegate_to: localhost
 
     - name: Apply Kube-VIP RBAC Manifest
