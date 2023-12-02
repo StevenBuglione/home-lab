@@ -9,6 +9,12 @@
       ansible.builtin.shell:
         cmd: kubectl apply -f https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml
 
+    - name: Delete existing kube-vip ConfigMap if it exists
+      ansible.builtin.shell:
+        cmd: kubectl delete configmap kubevip -n kube-system
+      ignore_errors: yes
+
     - name: Create ConfigMap for kube-vip IP range
       ansible.builtin.shell:
         cmd: kubectl create configmap -n kube-system kubevip --from-literal range-global={{ lbrange }}
+
