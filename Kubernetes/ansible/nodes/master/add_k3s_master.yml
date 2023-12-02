@@ -1,0 +1,21 @@
+---
+- name: Add New Master Nodes to k3s Cluster
+  hosts: kubernetes_masters
+  gather_facts: no
+
+  tasks:
+    - name: Join each master node to the k3s cluster
+      ansible.builtin.shell:
+        cmd: >
+          k3sup join --ip {{ hostvars[item].ansible_host }}
+          --user {{ ansible_ssh_user }}
+          --sudo
+          --k3s-version {{ k3s_version }}
+          --server
+          --server-ip {{ hostvars['master01'].ansible_host }}
+          --ssh-key {{ ansible_ssh_private_key_file }}
+          --k3s-extra-args "--disable traefik --disable servicelb --flannel-iface={{ interface }} --node-ip={{ hostvars[item].ansible_host }}"
+          --server-user {{ ansible_ssh_user }}
+      loop: "{{ groups['kubernetes_masters'] }}"
+      when: inventory_hostname != 'master01'
+      delegate_to: localhost

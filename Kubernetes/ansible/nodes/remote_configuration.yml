@@ -1,0 +1,24 @@
+---
+- name: Configure SSH for Kubernetes Cluster
+  hosts: kubernetes_cluster
+  vars:
+    policycoreutils_package: policycoreutils
+
+  tasks:
+    - name: Disable Strict Host Key Checking for localhost
+      lineinfile:
+        path: "~/.ssh/config"
+        line: "StrictHostKeyChecking no"
+        create: yes
+      delegate_to: localhost
+
+    - name: Install policycoreutils on each node
+      ansible.builtin.apt:
+        name: "{{ policycoreutils_package }}"
+        state: latest
+        update_cache: yes
+        cache_valid_time: 3600
+      become: yes
+      become_method: sudo
+
+

@@ -1,0 +1,7 @@
+- import_playbook: ./local/install_local.yml
+- import_playbook: ./nodes/remote_configuration.yml
+- import_playbook: ./local/k3sup/k3sup_bootstrap.yml
+- import_playbook: ./local/kubVip/install_kube_vip.yml
+- import_playbook: ./nodes/master/add_k3s_master.yml
+- import_playbook: ./nodes/worker/add_k3s_workers.yml
+- import_playbook: ./local/kubVip/install_kube_vip_lb.yml

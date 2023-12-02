@@ -1,0 +1,25 @@
+---
+- name: Install Kubectl on local machine
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Check if Kubectl is installed
+      ansible.builtin.command:
+        cmd: kubectl version --client
+      register: kubectl_installed
+      ignore_errors: yes
+
+    - name: Install Kubectl
+      ansible.builtin.shell: |
+        echo -e "Kubectl not found, installing"
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+        sudo rm -rf kubectl
+      when: kubectl_installed.rc != 0
+
+    - name: Kubeclt already installed
+      ansible.builtin.debug:
+        msg: "kubeclt already installed"
+      when: kubectl_installed.rc == 0
