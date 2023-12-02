@@ -1,3 +1,12 @@
-- import_playbook: ../setup/k3sup.yml
-- import_playbook: ../setup/kubectl.yml
-- import_playbook: ../setup/docker.yml
+---
+# Install k3sup on local machine
+install_k3sup:
+  - import_playbook: ../setup/k3sup.yml
+
+# Install Kubectl on local machine
+install_kubectl:
+  - import_playbook: ../setup/kubectl.yml
+
+# Install Docker on local machine
+install_docker:
+  - import_playbook: ../setup/docker.yml
