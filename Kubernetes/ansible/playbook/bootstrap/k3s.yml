@@ -1,29 +1,29 @@
 ---
 # Local Setup
-local_setup:
-  - import_playbook: ../local/setup.yml
+- name: Local Setup
+  import_playbook: ../local/setup.yml
 
 # Cluster Setup
-cluster_initialization:
-  - import_playbook: ../nodes/cluster.yml
+- name: Cluster Setup
+  import_playbook: ../nodes/cluster.yml
 
-# k3sup and kube-vip Installation
-k3s_management_tools:
-  - import_playbook: ../setup/k3sup.yml
-  - import_playbook: ../setup/kube-vip.yml
+# Kube-VIP Installation
+- name: kube-vip Installation
+  import_playbook: ../setup/kube-vip.yml
 
-# Nodes Configuration
-nodes_configuration:
-  # Add Master Nodes to k3s Cluster
-  - import_playbook: ../nodes/master.yml
-  # Add Worker Nodes to k3s Cluster
-  - import_playbook: ../nodes/worker.yml
+# Master Nodes Setup
+- name: Add Master Nodes to k3s Cluster
+  import_playbook: ../nodes/master.yml
+
+# Worker Nodes Setup
+- name: Add Worker Nodes to k3s Cluster
+  import_playbook: ../nodes/worker.yml
 
 # Load Balancer Setup
-load_balancer_setup:
-  - import_playbook: ../setup/kube-vip-lb.yml
+- name: Load Balancer Setup
+  import_playbook: ../setup/kube-vip-lb.yml
 
 # Deployment Testing
-deployment_testing:
+- name: Deployment Testing
   # Optional: Deploy Nginx on k3s Cluster
-  - import_playbook: ../test/nginx.yml
+  import_playbook: ../test/nginx.yml
