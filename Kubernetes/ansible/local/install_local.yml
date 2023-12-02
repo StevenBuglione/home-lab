@@ -1,3 +1,0 @@
-- import_playbook: ./setup/install_k3sup.yml
-- import_playbook: ./setup/install_kubectl.yml
-- import_playbook: ./setup/install_docker.yml
