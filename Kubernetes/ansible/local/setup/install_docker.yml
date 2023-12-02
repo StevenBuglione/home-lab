@@ -7,7 +7,7 @@
   tasks:
     - name: Check if Docker is installed
       ansible.builtin.command:
-        cmd: docker version
+        cmd: sudo docker version
       register: docker_installed
       ignore_errors: yes
 
