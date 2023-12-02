@@ -1,0 +1,31 @@
+---
+- name: Bootstrap First k3s Node
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars:
+    user: "{{ ansible_ssh_user }}"
+    cert_name: "{{ ansible_ssh_private_key_file }}"
+  tasks:
+    - name: Create .kube directory
+      ansible.builtin.file:
+        path: "~/.kube"
+        state: directory
+        mode: '0755'
+      delegate_to: localhost
+
+    - name: Bootstrap k3s on master node
+      ansible.builtin.shell:
+        cmd: >
+          k3sup install --ip {{ master_ip }}
+          --user {{ user }}
+          --tls-san {{ vip }}
+          --cluster
+          --k3s-version {{ k3s_version }}
+          --k3s-extra-args "--disable traefik --disable servicelb --flannel-iface={{ interface }} --node-ip={{ master_ip }}"
+          --merge
+          --sudo
+          --local-path $HOME/.kube/config
+          --ssh-key {{ cert_name }}
+          --context k3s-ha
+      delegate_to: localhost
