@@ -8,7 +8,18 @@
     - name: Install Rancher Repository
       ansible.builtin.shell: |
         helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
-        kubectl create namespace cattle-system
+        
+
+    - name: Create Rancher Namespace
+      ansible.builtin.shell: |
+          kubectl create namespace cattle-system
+      register: rancher_namespace
+      ignore_errors: yes
+
+    - name: Rancher Namespace already exists
+      ansible.builtin.debug:
+          msg: "Rancher Namespace already exists"
+      when: rancher_namespace.rc == 0
 
     - name: Install Rancher
       ansible.builtin.shell: |
