@@ -1,0 +1,24 @@
+---
+- name: Install && Configure Rancher
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Install Rancher Repository
+      ansible.builtin.shell: |
+        helm repo add rancher-latest https://releases.rancher.com/server-charts/latest
+        kubectl create namespace cattle-system
+
+    - name: Install Rancher
+      ansible.builtin.shell: |
+        helm install rancher rancher-alpha/rancher --devel \
+        --namespace cattle-system \
+        --set hostname=rancher.home.io \
+        --set bootstrapPassword=admin
+        kubectl -n cattle-system rollout status deploy/rancher
+        kubectl -n cattle-system get deploy rancher
+
+    - name: Configure Rancher
+      ansible.builtin.shell: |
+        kubectl expose deployment rancher --name=rancher-lb --port=443 --type=LoadBalancer -n cattle-system

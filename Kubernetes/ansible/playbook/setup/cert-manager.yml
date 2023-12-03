@@ -1,0 +1,17 @@
+---
+- name: Install Cert-Manger
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Install Cert-Manger
+      ansible.builtin.shell: |
+        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.13.2/cert-manager.crds.yaml
+        helm repo add jetstack https://charts.jetstack.io
+        helm repo update
+        helm install cert-manager jetstack/cert-manager \
+        --namespace cert-manager \
+        --create-namespace \
+        --version v1.13.2
+        kubectl get pods --namespace cert-manager

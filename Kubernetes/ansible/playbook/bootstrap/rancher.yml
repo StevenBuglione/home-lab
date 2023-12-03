@@ -1,0 +1,12 @@
+---
+# Install Helm on local machine
+- name: Install Helm on local machine
+  import_playbook: ../setup/helm.yml
+
+# Install Cert-Manager on K3s Cluster
+- name: Install Cert-Manager on K3s Cluster
+  import_playbook: ../setup/cert-manager.yml
+
+# Install Rancher on K3s Cluster
+- name: Install Rancher on K3s Cluster
+  import_playbook: ../setup/rancher.yml

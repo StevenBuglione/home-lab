@@ -1,0 +1,25 @@
+---
+- name: Install helm on local machine
+  hosts: localhost
+  connection: local
+  gather_facts: no
+
+  tasks:
+    - name: Check if helm is installed
+      ansible.builtin.command:
+        cmd: helm version
+      register: helm_installed
+      ignore_errors: yes
+
+    - name: Install Helm & Rancher Repository
+      ansible.builtin.shell: |
+        echo -e "helm not found, installing"
+        curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+        chmod 700 get_helm.sh
+        ./get_helm.sh
+      when: helm_installed.rc != 0
+
+    - name: Helm already installed
+      ansible.builtin.debug:
+        msg: "helm already installed"
+      when: helm_installed.rc == 0
