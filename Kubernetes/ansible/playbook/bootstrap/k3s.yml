@@ -3,13 +3,13 @@
 - name: Local Setup
   import_playbook: ../local/setup.yml
 
-# First Master Node Setup
-- name: First Master Node Setup
-  import_playbook: ../nodes/master-main.yml
-
 # Cluster Setup
 - name: Cluster Setup
   import_playbook: ../nodes/cluster.yml
+
+# First Master Node Setup
+- name: First Master Node Setup
+  import_playbook: ../nodes/master-main.yml
 
 # Kube-VIP Installation
 - name: kube-vip Installation
