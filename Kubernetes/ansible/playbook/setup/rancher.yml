@@ -9,7 +9,6 @@
       ansible.builtin.shell: |
         helm repo add rancher-alpha https://releases.rancher.com/server-charts/alpha
         helm repo update
-        helm fetch rancher-alpha/rancher
 
     - name: Check if cattle-system Namespace Exists
       ansible.builtin.shell: |
