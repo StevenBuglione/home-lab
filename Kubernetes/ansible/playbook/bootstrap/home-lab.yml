@@ -1,0 +1,8 @@
+---
+#Create K3S Cluster
+- name: Create K3S Cluster
+  import_playbook: ./k3s.yml
+
+#Install Rancher on K3S Cluster
+- name: Install Rancher on K3S Cluster
+  import_playbook: ./rancher.yml
