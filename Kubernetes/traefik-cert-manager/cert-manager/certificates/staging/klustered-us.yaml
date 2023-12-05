@@ -1,0 +1,15 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: klustered-us
+  namespace: default
+spec:
+  secretName: klustered-us-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "*.klustered.us"
+  dnsNames:
+  - "klustered.us"
+  - "*.klustered.us"
