@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bind9
+  labels:
+    app: bind9
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bind9
+  template:
+    metadata:
+      labels:
+        app: bind9
+    spec:
+      containers:
+        - name: bind9
+          image: internetsystemsconsortium/bind9:9.16
+          ports:
+            - containerPort: 53
+              protocol: UDP
+            - containerPort: 53
+              protocol: TCP
+            - containerPort: 953
+              protocol: TCP
+          volumeMounts:
+            - name: etc-bind
+              mountPath: /etc/bind
+            - name: var-cache-bind
+              mountPath: /var/cache/bind
+            - name: var-lib-bind
+              mountPath: /var/lib/bind
+            - name: var-log
+              mountPath: /var/log
+      volumes:
+        - name: etc-bind
+          persistentVolumeClaim:
+            claimName: etc-bind-pvc
+        - name: var-cache-bind
+          persistentVolumeClaim:
+            claimName: var-cache-bind-pvc
+        - name: var-lib-bind
+          persistentVolumeClaim:
+            claimName: var-lib-bind-pvc
+        - name: var-log
+          persistentVolumeClaim:
+            claimName: var-log-pvc

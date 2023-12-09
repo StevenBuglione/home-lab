@@ -13,3 +13,4 @@ spec:
   dnsNames:
   - "klustered.us"
   - "*.klustered.us"
+  - "*.home.klustered.us"
