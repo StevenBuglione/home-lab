@@ -21,7 +21,7 @@
 - name: Setup microk8s agents
   hosts: node
   serial: 1
-  environment: "{{ lookup('env', 'proxy_env') | default({}) }}"
+  environment: "{{ proxy_env | default({}) }}"
   vars:
     control_plane_host: "{{ groups['master'][0] }}"
   roles:

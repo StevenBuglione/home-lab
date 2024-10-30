@@ -1,18 +1,40 @@
 ---
+- name: Check if the node is already part of the cluster (from control plane)
+  delegate_to: "{{ control_plane_host }}"
+  become: true
+  shell: |
+    microk8s kubectl get nodes -o json
+  register: cluster_nodes
+  changed_when: false
+
+- name: Determine if the node is in the cluster node list
+  set_fact:
+    node_in_cluster: "{{ ansible_fqdn in cluster_nodes.stdout | from_json | json_query('items[*].metadata.name') }}"
+
+- name: Skip joining if the node is already part of the cluster
+  debug:
+    msg: "Node {{ inventory_hostname }} is already part of the cluster. Skipping join."
+  when: node_in_cluster
+  tags: skip_join
+
 - name: Generate a join token on the control plane node
   delegate_to: "{{ control_plane_host }}"
   become: true
   shell: |
     microk8s add-node --format yaml
   register: add_node_output
+  when: not node_in_cluster
 
 - name: Extract join command from the token output
   set_fact:
     token: "{{ add_node_output.stdout | from_yaml | json_query('token') }}"
+  when: not node_in_cluster
 
 - name: Join the worker node to the MicroK8s cluster
-  shell: "microk8s join {{control_plane_host}}:25000/{{ token }} --worker"
+  shell: "microk8s join {{ control_plane_host }}:25000/{{ token }} --worker"
   args:
     executable: /bin/bash
   become: true
+  when: not node_in_cluster
+
 
