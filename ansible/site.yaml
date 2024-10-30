@@ -1,0 +1,29 @@
+---
+- name: Pre tasks
+  hosts: all
+  pre_tasks:
+    - name: Verify Ansible is version 2.11 or above. (If this fails you may need to update Ansible)
+      ansible.builtin.assert:
+        that: ansible_version.full is version_compare('2.11', '>=')
+        msg: >
+          "Ansible is out of date. See here for more info: https://docs.technotim.live/posts/ansible-automation/"
+
+- name: Prepare microk8s nodes
+  hosts: microk8s_cluster
+  gather_facts: true
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: user
+      become: true
+    - role: download
+      become: true
+
+- name: Setup microk8s agents
+  hosts: node
+  serial: 1
+  environment: "{{ lookup('env', 'proxy_env') | default({}) }}"
+  vars:
+    control_plane_host: "{{ groups['master'][0] }}"
+  roles:
+    - role: microk8s_join_node
+      become: true

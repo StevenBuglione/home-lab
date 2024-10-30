@@ -1,0 +1,8 @@
+---
+- name: Reset microk8s cluster
+  hosts: microk8s_cluster
+  gather_facts: true
+  environment: "{{ proxy_env | default({}) }}"
+  roles:
+    - role: reset
+      become: true

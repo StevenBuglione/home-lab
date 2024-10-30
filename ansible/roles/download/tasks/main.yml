@@ -1,0 +1,13 @@
+---
+- name: Install microk8s
+  ansible.builtin.shell: |
+    sudo snap install microk8s --classic
+  become: true
+  become_method: sudo
+
+- name: Add user to microk8s group
+  ansible.builtin.user:
+    name: kadmin
+    groups: microk8s
+    append: yes
+

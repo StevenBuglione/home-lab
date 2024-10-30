@@ -1,0 +1,18 @@
+---
+- name: Generate a join token on the control plane node
+  delegate_to: "{{ control_plane_host }}"
+  become: true
+  shell: |
+    microk8s add-node --format yaml
+  register: add_node_output
+
+- name: Extract join command from the token output
+  set_fact:
+    token: "{{ add_node_output.stdout | from_yaml | json_query('token') }}"
+
+- name: Join the worker node to the MicroK8s cluster
+  shell: "microk8s join {{control_plane_host}}:25000/{{ token }} --worker"
+  args:
+    executable: /bin/bash
+  become: true
+

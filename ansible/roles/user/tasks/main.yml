@@ -1,0 +1,30 @@
+---
+- name: Create user kadmin
+  ansible.builtin.user:
+    name: kadmin
+    state: present
+    create_home: yes
+    shell: /bin/bash
+    password: "{{ kadmin_password | password_hash('sha512') }}"
+
+- name: Add kadmin to sudo group
+  ansible.builtin.user:
+    name: kadmin
+    groups: sudo
+    append: yes
+
+- name: Create .ssh directory for kadmin
+  ansible.builtin.file:
+    path: /home/kadmin/.ssh
+    state: directory
+    owner: kadmin
+    group: kadmin
+    mode: '0700'
+
+- name: Copy SSH public key to kadmin's authorized_keys
+  ansible.builtin.copy:
+    content: "{{ kadmin_ssh_key }}"
+    dest: /home/kadmin/.ssh/authorized_keys
+    owner: kadmin
+    group: kadmin
+    mode: '0600'

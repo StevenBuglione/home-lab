@@ -1,0 +1,10 @@
+---
+- name: Remove microk8s
+  ansible.builtin.shell: |
+    sudo snap remove microk8s
+
+- name: Remove kadmin user
+  ansible.builtin.user:
+    name: kadmin
+    state: absent
+    remove: yes
