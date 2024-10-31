@@ -1,0 +1,25 @@
+---
+- name: Retrieve 1Password credentials file
+  ansible.builtin.shell: |
+    echo "{{ one_password_credentials_json }}" > /tmp/1password-credentials.json
+  become: true
+
+- name: Create Kubernetes secret for 1Password credentials
+  ansible.builtin.shell: |
+    microk8s kubectl create secret generic op-credentials \
+    --from-file=1password-credentials.json=/tmp/1password-credentials.json \
+    -n default
+  become: true
+  ignore_errors: yes
+
+- name: Create Kubernetes secret for 1Password connect token
+  ansible.builtin.shell: |
+    microk8s kubectl create secret generic onepassword-token --from-literal=token={{ one_password_connect_token }} --namespace=default
+  become: true
+  ignore_errors: yes
+
+- name: Remove temporary 1Password credentials file
+  ansible.builtin.file:
+    path: /tmp/1password-credentials.json
+    state: absent
+  become: true

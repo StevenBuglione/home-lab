@@ -1,0 +1,4 @@
+argo_cd_repo: "StevenBuglione/k3s-argocd-boot"
+argo_cd_branch: "feature/1password"
+argo_cd_project: "registry/projects/development/project-dev.yml"
+argo_cd_root_app: "registry/projects/development/root-app-dev.yml"

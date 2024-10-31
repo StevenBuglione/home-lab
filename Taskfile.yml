@@ -6,7 +6,15 @@ tasks:
       - |
         KADMIN_PASSWORD=$(op read "op://Home-Lab/kadmin-user/password")
         KADMIN_SSH_KEY=$(op read "op://Home-Lab/Full Access SSH Key/public key")
-        ansible-playbook -i ansible/inventory/home-lab/host.ini ansible/site.yaml --extra-vars "kadmin_password=$KADMIN_PASSWORD kadmin_ssh_key='$KADMIN_SSH_KEY'"
+        ARGO_CD_ADMIN_PASSWORD=$(op read "op://Home-Lab/ArgoCd/azwafls7gpldnwml473uuod244")
+        ONE_PASSWORD_CREDENTIALS_JSON=$(op read "op://Home-Lab/Home-Lab Credentials File/password")
+        ONE_PASSWORD_CONNECT_TOKEN=$(op read "op://Home-Lab/x4fbbxbtboqv3vt3iairgo5ely/credential")
+        ansible-playbook -i ansible/inventory/home-lab/host.ini ansible/site.yaml \
+          --extra-vars "kadmin_password=$KADMIN_PASSWORD" \
+          --extra-vars "kadmin_ssh_key='$KADMIN_SSH_KEY'" \
+          --extra-vars "argo_cd_admin_password='$ARGO_CD_ADMIN_PASSWORD'" \
+          --extra-vars "one_password_credentials_json='$ONE_PASSWORD_CREDENTIALS_JSON'" \
+          --extra-vars "one_password_connect_token='$ONE_PASSWORD_CONNECT_TOKEN'"
     description: "Run Ansible playbook to create kadmin user with sudo access"
 
   ansible-reset-microk8s-cluster:

@@ -28,6 +28,18 @@
     - role: microk8s_join_node
       become: true
 
+- name: Provision 1Password secrets
+  hosts: master
+  roles:
+    - role: onepassword
+      become: true
+
+- name: Install ArgoCd
+  hosts: master
+  roles:
+    - role: argocd
+      become: true
+
 - name: Generate kubeconfig on the master node
   hosts: master
   environment: "{{ proxy_env | default({}) }}"

@@ -1,0 +1,40 @@
+---
+- name: Create argocd namespace
+  ansible.builtin.shell: |
+    microk8s kubectl create namespace argocd
+  ignore_errors: yes
+
+- name: Apply argocd manifests
+  ansible.builtin.shell: |
+    microk8s kubectl apply -n argocd  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+  ignore_errors: yes
+
+- name: Change Argo CD password
+  ansible.builtin.shell: |
+    microk8s kubectl patch secret -n argocd argocd-secret -p '{"stringData": { "admin.password": "{{ argo_cd_admin_password | replace('\n', '') }}"}}'
+  become: yes
+
+- name: "Create temp directory for Argo CD manifests"
+  ansible.builtin.shell: |
+    mkdir -p /tmp/microk8s/argo
+
+- name: "Download Argo-CD Project from GitHub"
+  get_url:
+    url: "https://raw.githubusercontent.com/{{ argo_cd_repo }}/{{ argo_cd_branch }}/{{ argo_cd_project }}"
+    dest: "/tmp/microk8s/argo/project.yaml"
+
+- name: "Download Argo-CD Root Application from GitHub"
+  get_url:
+    url: "https://raw.githubusercontent.com/{{ argo_cd_repo }}/{{ argo_cd_branch }}/{{ argo_cd_root_app }}"
+    dest: "/tmp/microk8s/argo/root-app.yaml"
+
+- name: "Apply Argo-CD Project from GitHub to Kubernetes cluster"
+  ansible.builtin.command: microk8s kubectl apply -f /tmp/microk8s/argo/project.yaml
+
+- name: "Apply Argo-CD Root Application to Kubernetes cluster"
+  ansible.builtin.command: microk8s kubectl apply -f /tmp/microk8s/argo/root-app.yaml
+
+- name: "Remove tmp directory used for manifests"
+  ansible.builtin.file:
+    path: /tmp/microk8s
+    state: absent
