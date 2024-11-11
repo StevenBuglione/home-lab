@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-bundle-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: '0'
+spec:
+  destination:
+    namespace: default
+    name: in-cluster
+  project: development
+  source:
+    path: registry/projects/development/cluster
+    repoURL: https://github.com/StevenBuglione/k3s-argocd-boot
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

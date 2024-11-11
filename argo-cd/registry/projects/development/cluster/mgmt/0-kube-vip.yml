@@ -1,0 +1,36 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-vip
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: '0'
+spec:
+  project: development
+  ignoreDifferences:
+    - group: apps
+      kind: DaemonSet
+      jsonPointers:
+        - /status
+        - /status/currentNumberScheduled
+        - /status/desiredNumberScheduled
+        - /status/numberAvailable
+        - /status/numberMisscheduled
+        - /status/numberReady
+        - /status/observedGeneration
+        - /status/updatedNumberScheduled
+  source:
+    repoURL: https://github.com/StevenBuglione/k3s-argocd-boot
+    path: registry/projects/development/cluster/mgmt/kube-vip
+    targetRevision: HEAD
+  destination:
+    name: in-cluster
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
