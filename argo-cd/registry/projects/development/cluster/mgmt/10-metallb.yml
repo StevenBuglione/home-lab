@@ -11,7 +11,7 @@ spec:
   project: development
   source:
     repoURL: https://github.com/StevenBuglione/home-lab
-    path: registry/projects/development/cluster/mgmt/metallb
+    path: argo-cd/registry/projects/development/cluster/mgmt/metallb
     targetRevision: HEAD
   destination:
     name: in-cluster

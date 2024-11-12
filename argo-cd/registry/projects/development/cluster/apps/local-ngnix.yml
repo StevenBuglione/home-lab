@@ -11,7 +11,7 @@ spec:
     name: in-cluster
   project: development
   source:
-    path: registry/projects/development/cluster/apps/nginx
+    path: argo-cd/registry/projects/development/cluster/apps/nginx
     repoURL: https://github.com/StevenBuglione/home-lab
     targetRevision: HEAD
   syncPolicy:

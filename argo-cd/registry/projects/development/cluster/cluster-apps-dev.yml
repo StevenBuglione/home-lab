@@ -13,7 +13,7 @@ spec:
     name: in-cluster
   project: development
   source:
-    path: registry/projects/development/cluster/apps
+    path: argo-cd/registry/projects/development/cluster/apps
     repoURL: https://github.com/StevenBuglione/home-lab
     targetRevision: HEAD
   syncPolicy:
