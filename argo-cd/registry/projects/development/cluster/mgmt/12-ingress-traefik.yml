@@ -1,0 +1,96 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: '12'
+spec:
+  project: development
+  source:
+    repoURL: 'https://helm.traefik.io/traefik'
+    targetRevision: v27.0.2
+    chart: traefik
+    helm:
+      values: |
+        globalArguments:
+          - "--global.sendanonymoususage=false"
+          - "--global.checknewversion=false"
+        
+        additionalArguments:
+          - "--serversTransport.insecureSkipVerify=true"
+          - "--log.level=INFO"
+        
+        deployment:
+          enabled: true
+          replicas: 3
+          annotations: {}
+          podAnnotations: {}
+          additionalContainers: []
+          initContainers: []
+        
+        ports:
+          web:
+            redirectTo:
+              port: websecure
+              priority: 10
+          websecure:
+            tls:
+              enabled: true
+        
+        ingressRoute:
+          dashboard:
+            enabled: false
+        
+        providers:
+          kubernetesCRD:
+            enabled: true
+            ingressClass: traefik-external
+            allowExternalNameServices: true
+          kubernetesIngress:
+            enabled: true
+            allowExternalNameServices: true
+            publishedService:
+              enabled: false
+        
+        rbac:
+          enabled: true
+        
+        service:
+          enabled: true
+          type: LoadBalancer
+          annotations: {}
+          labels: {}
+          spec:
+            loadBalancerIP: 10.10.10.30 # this should be an IP in the MetalLB range
+          loadBalancerSourceRanges: []
+          externalIPs: []
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: traefik
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: default-headers
+  namespace: default
+spec:
+  headers:
+    browserXssFilter: true
+    contentTypeNosniff: true
+    forceSTSHeader: true
+    stsIncludeSubdomains: true
+    stsPreload: true
+    stsSeconds: 15552000
+    customFrameOptionsValue: SAMEORIGIN
+    customRequestHeaders:
+      X-Forwarded-Proto: https
