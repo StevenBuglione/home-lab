@@ -1,7 +1,7 @@
 version: '3'
 
 tasks:
-  ansible-create-kadmin-user:
+  create:
     cmds:
       - |
         KADMIN_PASSWORD=$(op read "op://Home-Lab/kadmin-user/password")
@@ -17,8 +17,9 @@ tasks:
           --extra-vars "one_password_connect_token='$ONE_PASSWORD_CONNECT_TOKEN'"
     description: "Run Ansible playbook to create kadmin user with sudo access"
 
-  ansible-reset-microk8s-cluster:
+  destroy:
     cmds:
       - |
         ansible-playbook -i ansible/inventory/home-lab/host.ini ansible/reset.yaml
     description: "Run Ansible playbook to reset k3s cluster"
+

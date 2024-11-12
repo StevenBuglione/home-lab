@@ -12,7 +12,7 @@ spec:
   project: development
   source:
     path: registry/projects/development/cluster/apps/nginx
-    repoURL: https://github.com/StevenBuglione/k3s-argocd-boot
+    repoURL: https://github.com/StevenBuglione/home-lab
     targetRevision: HEAD
   syncPolicy:
     automated:

@@ -22,7 +22,7 @@ spec:
         - /status/observedGeneration
         - /status/updatedNumberScheduled
   source:
-    repoURL: https://github.com/StevenBuglione/k3s-argocd-boot
+    repoURL: https://github.com/StevenBuglione/home-lab
     path: registry/projects/development/cluster/mgmt/kube-vip
     targetRevision: HEAD
   destination:
